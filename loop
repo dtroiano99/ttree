@@ -1,0 +1,24 @@
+#define MyClass_cxx
+#include "MyClass.h"
+#include <TH2.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+
+void MyClass::Loop()
+{if (fChain == 0) return;
+
+  
+   //mie modifiche 
+   fChain->SetBranchStatus("*",0); 
+   fChain->SetBranchStatus("b_lep_pt",1);
+   Long64_t nentries = b_lep_pt->GetEntries();
+   
+   TH1F *myHisto  = new TH1F("myHisto","lep_pt", 100, 0,200);
+   
+   for (Long64_t jentry=0; jentry<nentries;jentry++) {
+         GetEntry(jentry);
+     int size = sizeof lep_pt / sizeof lep_pt[0];  
+     for (Int_t j = 0; j < size; j++) {
+                myHisto->Fill(lep_pt[j]);
+      
+     }}}
