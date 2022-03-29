@@ -1,0 +1,80 @@
+#define MyClass_cxx
+#include "MyClass.h"
+#include <TH2.h>
+#include <TStyle.h>
+#include <TCanvas.h>
+#include <vector>
+#include <string>
+#include <iostream>
+#include <cmath>
+#include "DataFormats/Math/interface/deltaR.h"
+void MyClass::Loop()
+{
+if (fChain == 0) return;
+
+  
+   //mie modifiche 
+   fChain->SetBranchStatus("*",0);    
+   fChain->SetBranchStatus("lep_pt",1);
+   fChain->SetBranchStatus("lep_id",1);
+   fChain->SetBranchStatus("lep_eta",1);  
+   fChain->SetBranchStatus("lep_phi",1); 
+   fChain->SetBranchStatus("GENlep_phi",1);
+   fChain->SetBranchStatus("GENlep_id",1);
+   fChain->SetBranchStatus("GENlep_eta",1);
+   
+  //Long64_t nentries = b_lep_pt->GetEntries();
+   Long64_t nentries = fChain->GetEntries();
+   
+   TH1F *myHisto1  = new TH1F("myHisto1","reco_gen_match_pt", 100, 0,200);
+   TH1F *myHisto2  = new TH1F("myHisto2","reco_gen_match_eta", 100, -3,3);
+   
+   
+   for (Long64_t jentry=0; jentry<nentries;jentry++) {
+   
+     GetEntry(jentry);
+
+     int size = lep_pt->size();  
+     int gensize = GENlep_id->size();
+     
+     for (Int_t j = 0; j < size; j++) {
+       int idx = -1;
+       int  bestidx = -1;
+       float bestdr = 9999.;
+       if(lep_id->at(j)==13 && abs(lep_eta->at(j))<2.4){
+	for (Int_t k = 0; k < gensize; k++) {
+	  idx = idx +1;
+	  if(GENlep_id->at(k)==13 && abs(GENlep_eta->at(k))<2.4){
+	    float dr = deltaR(GENlep_eta->at(k),GENlep_phi->at(k), lep_eta->at(j), lep_phi->at(j));
+	    if (dr < 0.1 && dr < bestdr) {
+	      bestidx = idx;
+	      bestdr = dr;}
+            
+	    
+
+	    }}
+	if(bestidx>-1){
+	  myHisto1->Fill(lep_pt->at(j));
+	  myHisto2->Fill(lep_eta->at(j));}}
+ 
+       //cout << lep_pt->at(j)<< endl;
+      
+     }}
+     TCanvas *MyC = new TCanvas("myC","Plot", 1000,800);
+   MyC->cd(); 
+   myHisto1->SetLineColor(2);
+   myHisto1->GetYaxis()->SetTitle("Events");
+   myHisto1->GetXaxis()->SetTitle("pt (Gev)");
+   myHisto1->GetXaxis()->CenterTitle();
+   myHisto1->Draw();
+   MyC->SaveAs("./Plots/RecoMatch_Pt.png");
+   MyC->Clear();
+   //grafico eta
+   MyC->cd(); 
+   myHisto2->SetLineColor(2);
+   myHisto2->GetYaxis()->SetTitle("Events");
+   myHisto2->GetXaxis()->SetTitle(" #eta ");
+   myHisto2->GetXaxis()->CenterTitle();
+   myHisto2->Draw();
+   MyC->SaveAs("./Plots/RecoMatch_Eta.png");
+   MyC->Clear();}
