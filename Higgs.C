@@ -62,7 +62,7 @@ fChain->SetBranchStatus("*",0);
 		if(j!=k && lep_id->at(k)==13 && abs(lep_eta->at(k))<2.4){
 		  TLorentzVector lepton3;
 		  lepton3.SetPtEtaPhiM(lep_pt->at(k),lep_eta->at(k),lep_phi->at(k),lep_mass->at(k));		  
-		  for (Int_t z = i; z < size; z++){
+		  for (Int_t z = 0; z < size; z++){
 		    TLorentzVector lepton4;
 		    lepton4.SetPtEtaPhiM(lep_pt->at(z),lep_eta->at(z),lep_phi->at(z),lep_mass->at(z));
 		    float mll2 = (lepton3+lepton4).M();
