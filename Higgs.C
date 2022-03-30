@@ -47,6 +47,7 @@ void MyClass::Loop()
      GetEntry(jentry);
 
      int size = lep_pt->size();  
+	   	if(size>3){		
      //int gensize = GENlep_id->size();
      for (Int_t j = 0; j < size; j++) {
        if(lep_id->at(j)==13 && abs(lep_eta->at(j))<2.4 && lep_pt->at(j)>5){
@@ -93,7 +94,7 @@ void MyClass::Loop()
 			h_4l_mass->Fill(mass4l);
 			h_Z1_mass->Fill(Zmasscandidate1); 
 			h_Z2_mass->Fill(Zmasscandidate2);          
-		    }}}}}}}}} //chiudo tutti i for e gli if sui leptoni
+		    }}}}}}}}}} //chiudo tutti i for e gli if sui leptoni
      h_candidates->Fill(ev);}//chiudo il loop sugli eventi
    //grafici pt
    TCanvas *MyC = new TCanvas("myC","Plot", 1000,800);
