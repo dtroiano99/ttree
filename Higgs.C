@@ -8,17 +8,17 @@
 #include <iostream>
 #include <cmath>
 #include "DataFormats/Math/interface/deltaR.h"
+#include "TVector3.h"
+#include "Math/GenVector/PtEtaPhiM4D.h"
 void MyClass::Loop()
 {
    if (fChain == 0) return;
-
-  
-   //mie modifiche 
-   fChain->SetBranchStatus("*",0);    
+fChain->SetBranchStatus("*",0);    
    fChain->SetBranchStatus("lep_pt",1);
    fChain->SetBranchStatus("lep_id",1);
    fChain->SetBranchStatus("lep_eta",1);  
    fChain->SetBranchStatus("lep_phi",1); 
+   fChain->SetBranchStatus("lep_mass",1);
    //fChain->SetBranchStatus("GENlep_phi",1);
    //fChain->SetBranchStatus("GENlep_id",1);
    //fChain->SetBranchStatus("GENlep_eta",1);
@@ -47,25 +47,33 @@ void MyClass::Loop()
      GetEntry(jentry);
 
      int size = lep_pt->size();  
-	   	if(size>3){		
+     if(size>3){
      //int gensize = GENlep_id->size();
      for (Int_t j = 0; j < size; j++) {
-       if(lep_id->at(j)==13 && abs(lep_eta->at(j))<2.4 && lep_pt->at(j)>5){
+       if(lep_id->at(j)==13 && abs(lep_eta->at(j))<2.4 ){
+	 TLorentzVector lepton1;
+	 lepton1.SetPtEtaPhiM(lep_pt->at(j),lep_eta->at(j),lep_phi->at(j),lep_mass->at(j));
 	 for (Int_t i = 0; i < size; i++){
-	   if(lep_id->at(i)==-13 && abs(lep_eta->at(i))<2.4 && lep_pt->at(i)>5 && lep_mass->at(i)+lep_mass->at(j)>12 && lep_mass->at(i)+lep_mass->at(j)<120){
-	     float Zmasscandidate1 = lep_mass->at(i)+lep_mass->at(j);
-	      for (Int_t k = 0; k < size; k++) {
-		if(j!=k && lep_id->at(k)==13 && abs(lep_eta->at(k))<2.4 && lep_pt->at(k)>5){
-		  for (Int_t z = 0; z < size; z++){
-		    if(i!=z && lep_id->at(z)==-13 && abs(lep_eta->at(z))<2.4 && lep_pt->at(z)>5 && lep_mass->at(z)+lep_mass->at(k)>12 && lep_mass->at(z)+lep_mass->at(k)<120){
-		      float Zmasscandidate2 = lep_mass->at(z)+lep_mass->at(k);
+	   TLorentzVector lepton2;
+	   lepton2.SetPtEtaPhiM(lep_pt->at(i),lep_eta->at(i),lep_phi->at(i),lep_mass->at(i));
+	   float mll1 = (lepton1+lepton2).M();
+	   if(lep_id->at(i)==-13 && abs(lep_eta->at(i))<2.4 && mll1 >12 && mll1<120){	    
+	      for (Int_t k = j; k < size; k++) {
+		if(j!=k && lep_id->at(k)==13 && abs(lep_eta->at(k))<2.4){
+		  TLorentzVector lepton3;
+		  lepton3.SetPtEtaPhiM(lep_pt->at(k),lep_eta->at(k),lep_phi->at(k),lep_mass->at(k));		  
+		  for (Int_t z = i; z < size; z++){
+		    TLorentzVector lepton4;
+		    lepton4.SetPtEtaPhiM(lep_pt->at(z),lep_eta->at(z),lep_phi->at(z),lep_mass->at(z));
+		    float mll2 = (lepton3+lepton4).M();
+		    if(i!=z && lep_id->at(z)==-13 && abs(lep_eta->at(z))<2.4 && mll2>12 && mll2<120){		      
 		      float MassZ1,MassZ2;
-		      if(abs(Zmasscandidate1-91.2)<abs(Zmasscandidate2-91.2)){
-			MassZ1 =Zmasscandidate1;
-			MassZ2 =Zmasscandidate2;}
+		      if(abs(mll1-91.2)<abs(mll2-91.2)){
+			MassZ1 =mll1;
+			MassZ2 =mll2;}
 		      else {			
-			MassZ1 =Zmasscandidate2;
-			MassZ2 =Zmasscandidate1;}		      
+			MassZ1 =mll2;
+			MassZ2 =mll1;}		      
 		      float PT[4] = {lep_pt->at(i),lep_pt->at(j),lep_pt->at(k),lep_pt->at(z)};
 		      float ETA[4] = {lep_eta->at(i),lep_eta->at(j),lep_eta->at(k),lep_eta->at(z)};
 		      //ordino i 2 vettori per pt con l'ordinamento a bolle dal più piccolo al più grande		  
@@ -80,7 +88,7 @@ void MyClass::Loop()
 			holdeta = ETA[p]; // scambia 
 			ETA[p] = ETA[p + 1];
 			ETA[p + 1] = holdeta;}}}// PT e ETA sono ordinati per pt
-		      float mass4l = Zmasscandidate2 +Zmasscandidate1;
+		      float mass4l = (lepton1+lepton2+lepton3+lepton4).M();;
 		      if(PT[3]>20 && PT[2]>10 && MassZ1>40 && mass4l>70){
 			ev = ev +1;
 			h_pt_0->Fill(PT[3]);
@@ -92,9 +100,9 @@ void MyClass::Loop()
 			h_eta_2->Fill(ETA[1]);
 			h_eta_3->Fill(ETA[0]);
 			h_4l_mass->Fill(mass4l);
-			h_Z1_mass->Fill(Zmasscandidate1); 
-			h_Z2_mass->Fill(Zmasscandidate2);          
-		    }}}}}}}}}} //chiudo tutti i for e gli if sui leptoni
+			h_Z1_mass->Fill(MassZ1); 
+			h_Z2_mass->Fill(MassZ2);          
+		      }}}}}}}}}} //chiudo tutti i for e gli if sui leptoni
      h_candidates->Fill(ev);}//chiudo il loop sugli eventi
    //grafici pt
    TCanvas *MyC = new TCanvas("myC","Plot", 1000,800);
@@ -198,3 +206,6 @@ void MyClass::Loop()
    h_candidates->Draw();
    MyC->SaveAs("./Plots/Higgs/candidates.png");
    MyC->Clear();}//chiudo tutti i loop
+
+  
+   
