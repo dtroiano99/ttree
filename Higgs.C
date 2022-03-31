@@ -101,7 +101,8 @@ fChain->SetBranchStatus("*",0);
 			h_eta_3->Fill(ETA[0]);
 			h_4l_mass->Fill(mass4l);
 			h_Z1_mass->Fill(MassZ1); 
-			h_Z2_mass->Fill(MassZ2);          
+			h_Z2_mass->Fill(MassZ2);         
+			cout <<"all'evento numero "<< jentry<<" partecipano i muoni " << j << "  "<< i<< "  " << k<< "  " << z << endl;
 		      }}}}}}}}}} //chiudo tutti i for e gli if sui leptoni
      h_candidates->Fill(ev);}//chiudo il loop sugli eventi
    //grafici pt
