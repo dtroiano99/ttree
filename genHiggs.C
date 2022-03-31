@@ -100,7 +100,7 @@ void MyClass::Loop()
 			bestidx3 = idx3;
 			bestdr3 = dr3;}}}
 		  if(bestidx3>-1 && bestidx3 != bestidx1 && GENlep_MomId->at(bestidx3)==23 &&  GENlep_MomMomId->at(bestidx3)==25){
-		  for (Int_t z = 0; z < size; z++){
+		  for (Int_t z = i; z < size; z++){
 		    int idx4 = -1;
 		    int  bestidx4 = -1;
 		    float bestdr4 = 9999.;
