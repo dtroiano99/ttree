@@ -15,7 +15,7 @@ void MyClass::Loop()
   if (fChain == 0) return;
 
   
-   //mie modifiche 
+ //mie modifiche 
    fChain->SetBranchStatus("*",0);    
    fChain->SetBranchStatus("lep_pt",1);
    fChain->SetBranchStatus("lep_id",1);
@@ -39,7 +39,7 @@ void MyClass::Loop()
    TH1F *h_eta_1  = new TH1F("h_eta_1","eta of second lepton", 100,-3,3);
    TH1F *h_eta_2  = new TH1F("h_eta_2","eta of third lepton", 100, -3,3);
    TH1F *h_eta_3  = new TH1F("h_eta_3","eta of fourth lepton", 100, -3,3);
-   TH1F *h_candidates  = new TH1F("h_candidates","number of candidates for event", 6, -0.5,5.5);
+   TH1F *h_candidates  = new TH1F("h_candidates","number of candidates for event", 5, -0.5,4.5);
    TH1F *h_4l_mass  = new TH1F("h_4l_mass","mass of the four leptons", 100, 70,200);
    TH1F *h_Z1_mass  = new TH1F("h_Z1_mass","mass of Z1", 100, 12,120);
    TH1F *h_Z2_mass  = new TH1F("h_Z2_mass","mass of Z2", 100, 12,120);
@@ -48,6 +48,24 @@ void MyClass::Loop()
    
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
      float ev = 0;
+     vector<int> indicej;
+     vector<int> indicei;
+     vector<int> indicek;
+     vector<int> indicez;
+     vector<float> PT3;
+     vector<float> PT2;
+     vector<float> PT1;
+     vector<float> PT0;
+     vector<float> ETA3;
+     vector<float> ETA2;
+     vector<float> ETA1;
+     vector<float> ETA0;
+     vector<float> MASS4L;
+     vector<float> MASSZ1;
+     vector<float> MASSZ2;
+   
+   
+   
    
      GetEntry(jentry);
 
@@ -100,7 +118,7 @@ void MyClass::Loop()
 			bestidx3 = idx3;
 			bestdr3 = dr3;}}}
 		  if(bestidx3>-1 && bestidx3 != bestidx1 && GENlep_MomId->at(bestidx3)==23 &&  GENlep_MomMomId->at(bestidx3)==25){
-		  for (Int_t z = i; z < size; z++){
+		  for (Int_t z = 0; z < size; z++){
 		    int idx4 = -1;
 		    int  bestidx4 = -1;
 		    float bestdr4 = 9999.;
@@ -138,21 +156,46 @@ void MyClass::Loop()
 			ETA[p] = ETA[p + 1];
 			ETA[p + 1] = holdeta;}}}// PT e ETA sono ordinati per pt
 		      float mass4l = (lepton1+lepton2+lepton3+lepton4).M();;
-		      if(PT[3]>20 && PT[2]>10 && MassZ1>40 && mass4l>70){
-			ev = ev +1;
-			h_pt_0->Fill(PT[3]);
-			h_pt_1->Fill(PT[2]);
-			h_pt_2->Fill(PT[1]);
-			h_pt_3->Fill(PT[0]);
-			h_eta_0->Fill(ETA[3]);
-			h_eta_1->Fill(ETA[2]);
-			h_eta_2->Fill(ETA[1]);
-			h_eta_3->Fill(ETA[0]);
-			h_4l_mass->Fill(mass4l);
-			h_Z1_mass->Fill(MassZ1); 
-			h_Z2_mass->Fill(MassZ2); 
-			cout <<"all'evento numero "<< jentry<<" partecipano i muoni " << j << "  "<< i<< "  " << k<< "  " << z << endl;
+		      if(PT[3]>20 && PT[2]>10 && MassZ1>40 && mass4l>70){	
+			indicej.push_back(j);
+			indicei.push_back(i);
+			indicek.push_back(k);
+			indicez.push_back(z);
+			PT3.push_back(PT[3]);
+			PT2.push_back(PT[2]);
+			PT1.push_back(PT[1]);
+			PT0.push_back(PT[0]);
+			ETA3.push_back(ETA[3]);
+			ETA2.push_back(ETA[2]);
+			ETA1.push_back(ETA[1]);
+			ETA0.push_back(ETA[0]);
+			MASS4L.push_back(mass4l);
+			MASSZ1.push_back(MassZ1);
+			MASSZ2.push_back(MassZ2);			
 		      }}}}}}}}}}}}}} //chiudo tutti i for e gli if sui leptoni
+     int size2 = PT3.size();  
+     for (Int_t w = 0; w < size2; w++) {
+       for (Int_t g = w; g < size2; g++) {
+	 if(indicej[w]==indicej[g] && indicek[w]==indicek[g] && indicei[w]==indicez[g] && indicei[w]==indicez[g]){
+	   if(abs(MASSZ1[w]-91.2)<abs(MASSZ1[g]-91.2)){MASSZ1[g]=0;}
+	   else{MASSZ1[w]=0;}}}
+       if(MASSZ1[w]!=0){
+	 ev = ev +1;
+	 h_pt_0->Fill(PT0[w]);
+	 h_pt_1->Fill(PT1[w]);
+	 h_pt_2->Fill(PT2[w]);
+	 h_pt_3->Fill(PT3[w]);
+	 h_eta_0->Fill(ETA0[w]);
+	 h_eta_1->Fill(ETA2[w]);
+	 h_eta_2->Fill(ETA2[w]);
+	 h_eta_3->Fill(ETA3[w]);
+	 h_4l_mass->Fill(MASS4L[w]);
+	 h_Z1_mass->Fill(MASSZ1[w]); 
+	 h_Z2_mass->Fill(MASSZ2[w]); 
+	 // cout <<"all'evento numero "<< jentry<<" partecipano i muoni " << j << "  "<< i<< "  " << k<< "  " << z << endl;
+}}
+     
+
      h_candidates->Fill(ev);}//chiudo il loop sugli eventi
    //grafici pt
    TCanvas *MyC = new TCanvas("myC","Plot", 1000,800);
