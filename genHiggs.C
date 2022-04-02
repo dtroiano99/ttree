@@ -31,14 +31,14 @@ void MyClass::Loop()
   //Long64_t nentries = b_lep_pt->GetEntries();
    Long64_t nentries = fChain->GetEntries();
    
-   TH1F *h_pt_0  = new TH1F("h_pt_0","pt of first lepton", 100, 0,200);
-   TH1F *h_pt_1  = new TH1F("h_pt_1","pt of second lepton", 100, 0,200);
-   TH1F *h_pt_2  = new TH1F("h_pt_2","pt of third lepton", 100, 0,200);
-   TH1F *h_pt_3  = new TH1F("h_pt_3","pt of fourth lepton", 100, 0,200);
-   TH1F *h_eta_0  = new TH1F("h_eta_0","eta of first lepton", 100, -3,3);   
-   TH1F *h_eta_1  = new TH1F("h_eta_1","eta of second lepton", 100,-3,3);
-   TH1F *h_eta_2  = new TH1F("h_eta_2","eta of third lepton", 100, -3,3);
-   TH1F *h_eta_3  = new TH1F("h_eta_3","eta of fourth lepton", 100, -3,3);
+   TH1F *h_pt_0  = new TH1F("h_pt_0","pt of foyrth lepton", 100, 0,200);
+   TH1F *h_pt_1  = new TH1F("h_pt_1","pt of third lepton", 100, 0,200);
+   TH1F *h_pt_2  = new TH1F("h_pt_2","pt of second lepton", 100, 0,200);
+   TH1F *h_pt_3  = new TH1F("h_pt_3","pt of first lepton", 100, 0,200);
+   TH1F *h_eta_0  = new TH1F("h_eta_0","eta of fourth lepton", 100, -3,3);   
+   TH1F *h_eta_1  = new TH1F("h_eta_1","eta of third lepton", 100,-3,3);
+   TH1F *h_eta_2  = new TH1F("h_eta_2","eta of second lepton", 100, -3,3);
+   TH1F *h_eta_3  = new TH1F("h_eta_3","eta of first lepton", 100, -3,3);
    TH1F *h_candidates  = new TH1F("h_candidates","number of candidates for event", 5, -0.5,4.5);
    TH1F *h_4l_mass  = new TH1F("h_4l_mass","mass of the four leptons", 100, 70,200);
    TH1F *h_Z1_mass  = new TH1F("h_Z1_mass","mass of Z1", 100, 12,120);
