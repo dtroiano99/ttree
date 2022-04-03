@@ -36,7 +36,7 @@ fChain->SetBranchStatus("*",0);
    TH1F *h_eta_3  = new TH1F("h_eta_3","eta of first lepton", 100, -3,3);
    TH1F *h_candidates  = new TH1F("h_candidates","number of candidates for event", 11, -0.5,10.5);
    TH1F *h_4l_mass  = new TH1F("h_4l_mass","mass of the four leptons", 100, 70,200);
-   TH1F *h_Z1_mass  = new TH1F("h_Z1_mass","mass of Z1", 120, 12,120);
+   TH1F *h_Z1_mass  = new TH1F("h_Z1_mass","mass of Z1", 120, 0,120);
    TH1F *h_Z2_mass  = new TH1F("h_Z2_mass","mass of Z2", 100, 12,120);
 
    
