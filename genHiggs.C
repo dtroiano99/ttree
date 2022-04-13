@@ -185,7 +185,7 @@ void MyClass::Loop()
 			ETA[p + 1] = holdeta;}}}// PT e ETA sono ordinati per pt
 		      float mass4l = (lepton1+lepton2+lepton3+lepton4).M();
 		      float p4l = (lepton1+lepton2+lepton3+lepton4).P();
-		      if(PT[3]>20 && PT[2]>10 && MassZ1>40 && mass4l>70){	
+		      if(PT[3]>20 && PT[2]>10 && PT[0]>5 && MassZ1>40 && mass4l>70){	
 			indicej.push_back(j);
 			indicei.push_back(i);
 			indicek.push_back(k);
@@ -225,7 +225,7 @@ void MyClass::Loop()
 	 h_Z1_mass->Fill(MASSZ1[w]); 
 	 h_Z2_mass->Fill(MASSZ2[w]);
 	 for(Int_t r = 0; r < cutsize; r++) {	   
-	   if (PT3[w]>cut_pt_first_muon[r] && PT0[w]>5) {
+	   if (PT3[w]>cut_pt_first_muon[r] ) {
 	     npass[r]=npass[r] + 1;
 	     //if (r ==2){ h_pt_3_pass->Fill(PT3[w]);}
 	     h_4l_p_pass[r]->Fill(P4L[w]);
