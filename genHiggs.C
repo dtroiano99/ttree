@@ -31,7 +31,7 @@ void MyClass::Loop()
   //Long64_t nentries = b_lep_pt->GetEntries();
    Long64_t nentries = fChain->GetEntries();
    
-   TH1F *h_pt_0  = new TH1F("h_pt_0","pt of foyrth lepton", 100, 0,200);
+   TH1F *h_pt_0  = new TH1F("h_pt_0","pt of fourth lepton", 100, 0,200);
    TH1F *h_pt_1  = new TH1F("h_pt_1","pt of third lepton", 100, 0,200);
    TH1F *h_pt_2  = new TH1F("h_pt_2","pt of second lepton", 100, 0,200);
    TH1F *h_pt_3  = new TH1F("h_pt_3","pt of first lepton", 100, 0,200);
