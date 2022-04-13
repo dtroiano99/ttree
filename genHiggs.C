@@ -10,12 +10,13 @@
 #include "DataFormats/Math/interface/deltaR.h"
 #include "TVector3.h"
 #include "Math/GenVector/PtEtaPhiM4D.h"
+#include <stdio.h>
 void MyClass::Loop()
 {
   if (fChain == 0) return;
 
   
- //mie modifiche 
+//mie modifiche 
    fChain->SetBranchStatus("*",0);    
    fChain->SetBranchStatus("lep_pt",1);
    fChain->SetBranchStatus("lep_id",1);
@@ -27,23 +28,49 @@ void MyClass::Loop()
    fChain->SetBranchStatus("GENlep_eta",1);
    fChain->SetBranchStatus("GENlep_MomId",1);
    fChain->SetBranchStatus("GENlep_MomMomId",1);
+   fChain->SetBranchStatus("lep_d0PV",1);
+   fChain->SetBranchStatus("lep_Sip",1);
+      
    
   //Long64_t nentries = b_lep_pt->GetEntries();
    Long64_t nentries = fChain->GetEntries();
+   float nbin, min,max;
+   nbin =50;
+   min=0.1;
+   max=400;
    
    TH1F *h_pt_0  = new TH1F("h_pt_0","pt of fourth lepton", 100, 0,200);
    TH1F *h_pt_1  = new TH1F("h_pt_1","pt of third lepton", 100, 0,200);
    TH1F *h_pt_2  = new TH1F("h_pt_2","pt of second lepton", 100, 0,200);
    TH1F *h_pt_3  = new TH1F("h_pt_3","pt of first lepton", 100, 0,200);
+   TH1F *h_pt_3_pass  = new TH1F("h_pt_3_pass","pt of first lepton that pass th cut", 100, 0,200);
    TH1F *h_eta_0  = new TH1F("h_eta_0","eta of fourth lepton", 100, -3,3);   
    TH1F *h_eta_1  = new TH1F("h_eta_1","eta of third lepton", 100,-3,3);
    TH1F *h_eta_2  = new TH1F("h_eta_2","eta of second lepton", 100, -3,3);
    TH1F *h_eta_3  = new TH1F("h_eta_3","eta of first lepton", 100, -3,3);
    TH1F *h_candidates  = new TH1F("h_candidates","number of candidates for event", 5, -0.5,4.5);
    TH1F *h_4l_mass  = new TH1F("h_4l_mass","mass of the four leptons", 100, 70,200);
-   TH1F *h_Z1_mass  = new TH1F("h_Z1_mass","mass of Z1", 120, 0,120);
+   TH1F *h_Z1_mass  = new TH1F("h_Z1_mass","mass of Z1", 100, 12,120);
    TH1F *h_Z2_mass  = new TH1F("h_Z2_mass","mass of Z2", 100, 12,120);
-
+   TH1F *h_4l_p = new TH1F("h_4l_p","momentum of the four leptons", nbin, min,max);
+   TH1F *h_4l_p_pass[99] = {};
+   //float eff;
+   //float npass,ntot;
+   float ntot;      
+   ntot = 0;
+   vector<float> cut_pt_first_muon;
+   cut_pt_first_muon.push_back(10);
+   cut_pt_first_muon.push_back(30);
+   cut_pt_first_muon.push_back(50);
+   cut_pt_first_muon.push_back(60);
+   const int cutsize = cut_pt_first_muon.size();
+   cout << cutsize << endl;
+   float eff[99]={};
+   float npass[99]={};
+   for(Int_t u = 0; u < cutsize; u++) {
+     std::string nomestringa{"h_4l_p_pass_"+std::to_string(u)};
+     const char * nome{nomestringa.c_str()};
+     h_4l_p_pass[u]= new TH1F(nome,"momentum of the four leptons that pass the cut", nbin, min,max);}
    
    
    for (Long64_t jentry=0; jentry<nentries;jentry++) {
@@ -61,6 +88,7 @@ void MyClass::Loop()
      vector<float> ETA1;
      vector<float> ETA0;
      vector<float> MASS4L;
+     vector<float> P4L;
      vector<float> MASSZ1;
      vector<float> MASSZ2;
    
@@ -76,7 +104,7 @@ void MyClass::Loop()
        int idx1 = -1;
        int  bestidx1 = -1;
        float bestdr1 = 9999.;
-       if(lep_id->at(j)==13 && abs(lep_eta->at(j))<2.4 ){
+       if(lep_id->at(j)==13 && abs(lep_eta->at(j))<2.4 && lep_Sip->at(j)<4 && lep_d0PV->at(j)<0.005 ){
 	 TLorentzVector lepton1;
 	 lepton1.SetPtEtaPhiM(lep_pt->at(j),lep_eta->at(j),lep_phi->at(j),lep_mass->at(j));
 	 for (Int_t r = 0; r < gensize; r++) {
@@ -94,7 +122,7 @@ void MyClass::Loop()
 	   TLorentzVector lepton2;
 	   lepton2.SetPtEtaPhiM(lep_pt->at(i),lep_eta->at(i),lep_phi->at(i),lep_mass->at(i));
 	   float mll1 = (lepton1+lepton2).M();	   
-	   if(lep_id->at(i)==-13 && abs(lep_eta->at(i))<2.4 && mll1 >12 && mll1<120){
+	   if(lep_id->at(i)==-13 && abs(lep_eta->at(i))<2.4 && mll1 >12 && mll1<120 && lep_Sip->at(i)<4 && lep_d0PV->at(i)<0.005){
 	     for (Int_t t = 0; t < gensize; t++) {
 	       idx2 = idx2 +1;
 	       if(GENlep_id->at(t)==-13 && abs(GENlep_eta->at(t))<2.4){
@@ -107,7 +135,7 @@ void MyClass::Loop()
 	       int idx3 = -1;
 	       int  bestidx3 = -1;
 	       float bestdr3 = 9999.;
-	       if(j!=k && lep_id->at(k)==13 && abs(lep_eta->at(k))<2.4){
+	       if(j!=k && lep_id->at(k)==13 && abs(lep_eta->at(k))<2.4 && lep_Sip->at(k)<4 && lep_d0PV->at(k)<0.005){
 		  TLorentzVector lepton3;
 		  lepton3.SetPtEtaPhiM(lep_pt->at(k),lep_eta->at(k),lep_phi->at(k),lep_mass->at(k));
 		  for (Int_t q = 0; q < gensize; q++) {
@@ -125,7 +153,7 @@ void MyClass::Loop()
 		    TLorentzVector lepton4;
 		    lepton4.SetPtEtaPhiM(lep_pt->at(z),lep_eta->at(z),lep_phi->at(z),lep_mass->at(z));
 		    float mll2 = (lepton3+lepton4).M();
-		    if(i!=z && lep_id->at(z)==-13 && abs(lep_eta->at(z))<2.4 && mll2>12 && mll2<120){
+		    if(i!=z && lep_id->at(z)==-13 && abs(lep_eta->at(z))<2.4 && mll2>12 && mll2<120 && lep_Sip->at(z)<4 && lep_d0PV->at(z)<0.005){
 		      for (Int_t y = 0; y < gensize; y++) {
 			idx4 = idx4 +1;
 			if(GENlep_id->at(y)==-13 && abs(GENlep_eta->at(y))<2.4){
@@ -155,7 +183,8 @@ void MyClass::Loop()
 			holdeta = ETA[p]; // scambia 
 			ETA[p] = ETA[p + 1];
 			ETA[p + 1] = holdeta;}}}// PT e ETA sono ordinati per pt
-		      float mass4l = (lepton1+lepton2+lepton3+lepton4).M();;
+		      float mass4l = (lepton1+lepton2+lepton3+lepton4).M();
+		      float p4l = (lepton1+lepton2+lepton3+lepton4).P();
 		      if(PT[3]>20 && PT[2]>10 && MassZ1>40 && mass4l>70){	
 			indicej.push_back(j);
 			indicei.push_back(i);
@@ -170,6 +199,7 @@ void MyClass::Loop()
 			ETA1.push_back(ETA[1]);
 			ETA0.push_back(ETA[0]);
 			MASS4L.push_back(mass4l);
+			P4L.push_back(p4l);
 			MASSZ1.push_back(MassZ1);
 			MASSZ2.push_back(MassZ2);			
 		      }}}}}}}}}}}}}} //chiudo tutti i for e gli if sui leptoni
@@ -181,6 +211,7 @@ void MyClass::Loop()
 	   else{MASSZ1[w]=0;}}}
        if(MASSZ1[w]!=0){
 	 ev = ev +1;
+	 ntot = ntot + 1;
 	 h_pt_0->Fill(PT0[w]);
 	 h_pt_1->Fill(PT1[w]);
 	 h_pt_2->Fill(PT2[w]);
@@ -190,13 +221,45 @@ void MyClass::Loop()
 	 h_eta_2->Fill(ETA2[w]);
 	 h_eta_3->Fill(ETA3[w]);
 	 h_4l_mass->Fill(MASS4L[w]);
+	 h_4l_p->Fill(P4L[w]);
 	 h_Z1_mass->Fill(MASSZ1[w]); 
-	 h_Z2_mass->Fill(MASSZ2[w]); 
-	 // cout <<"all'evento numero "<< jentry<<" partecipano i muoni " << j << "  "<< i<< "  " << k<< "  " << z << endl;
+	 h_Z2_mass->Fill(MASSZ2[w]);
+	 for(Int_t r = 0; r < cutsize; r++) {	   
+	   if (PT3[w]>cut_pt_first_muon[r] && PT0[w]>5) {
+	     npass[r]=npass[r] + 1;
+	     //if (r ==2){ h_pt_3_pass->Fill(PT3[w]);}
+	     h_4l_p_pass[r]->Fill(P4L[w]);
 }}
+	 // cout <<"all'evento numero "<< jentry<<" partecipano i muoni " << j << "  "<< i<< "  " << k<< "  " << z << endl;
+       }}
      
 
      h_candidates->Fill(ev);}//chiudo il loop sugli eventi
+   for(Int_t o = 0; o < cutsize; o++) {
+   
+ 
+   //Tefficency
+   TEfficiency* pEff[99] = {};  
+   if(TEfficiency::CheckConsistency(* h_4l_p_pass[o],* h_4l_p)){
+     pEff[o] = new TEfficiency(* h_4l_p_pass[o],* h_4l_p);
+     pEff[o]->SetLineColor(o+1);     
+     //pEff->GetYaxis()->SetTitle("Events");
+     //pEff->GetXaxis()->SetTitle("pt (Gev)");
+     //pEff->GetXaxis()->CenterTitle();
+     pEff[o]->SetTitle("efficiencies; p (Gev) ; #epsilon"); 
+     if(o==0){pEff[o]->Draw();}
+     else{ pEff[o]->Draw("same");}
+     gPad->Update(); 
+     auto graph = pEff[o]->GetPaintedGraph(); 
+     graph->SetMinimum(0);
+     graph->SetMaximum(1); 
+     gPad->Update(); 
+   }
+   eff[o]=npass[o]/ntot;
+   cout <<"imponendo come taglio "<<cut_pt_first_muon[o]<< " GeV sul muone più energetico ottengo come efficenza "<< eff[o] << endl;}
+   /*TCanvas *MyC = new TCanvas("myC","Plot", 1000,800);
+   MyC->cd();
+   h_4l_p->Draw();*/ 
    //grafici pt
    TCanvas *MyC = new TCanvas("myC","Plot", 1000,800);
    MyC->cd(); 
