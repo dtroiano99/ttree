@@ -68,7 +68,7 @@ void MyClass::Loop()
    TH1F *h_NOMS  = new TH1F("h_NOMS","number of matched stations", 9, -0.5,8.5);
    TH1F *h_VAFR  = new TH1F("h_VAFR","valid fraction", 100, 0,1.000001);
    TH1F *h_NOC2  = new TH1F("h_NOC2","normalised Chi 2", 130, -1,12);
-   TH1F *h_NVMH  = new TH1F("h_NVMH","number of valid muon hits", 14, -0.5,13.5);
+   TH1F *h_NVMH  = new TH1F("h_NVMH","number of valid muon hits", 61, -0.5,60.5);
    //float eff;
    //float npass,ntot;
    float ntot;      
