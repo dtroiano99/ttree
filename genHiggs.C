@@ -317,10 +317,10 @@ void MyClass::Loop()
 			NOC22.push_back(NOC2[2]);
 			NOC21.push_back(NOC2[1]);
 			NOC20.push_back(NOC2[0]);
-			NVMH3.push_back(NVPH[3]);
-			NVMH2.push_back(NVPH[2]);
-			NVMH1.push_back(NVPH[1]);
-			NVMH0.push_back(NVPH[0]);
+			NVMH3.push_back(NVMH[3]);
+			NVMH2.push_back(NVMH[2]);
+			NVMH1.push_back(NVMH[1]);
+			NVMH0.push_back(NVMH[0]);
 		      }}}}}}}}}}}}}} //chiudo tutti i for e gli if sui leptoni
      int size2 = PT3.size();  
      if (size2 != 0){ntotevpass = ntotevpass +1;}
