@@ -509,7 +509,7 @@ void prova(){
   Float_t cut_pt[cutsize1]; 
   Float_t cut_VAFR[cutsize2];
   int p;
-  for(k=0;p<cutsize1 + cutsize2;p++){ 
+  for(p=0;p<cutsize1 + cutsize2;p++){ 
     Float_t Sig = list_sig[19+1+p]->Integral();
     TH1F *last2 = (TH1F*)hs_BKG[19 + 1 + p]->GetStack()->Last();
     Float_t Bkg = last2->Integral();
