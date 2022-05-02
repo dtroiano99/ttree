@@ -527,7 +527,7 @@ void prova(){
       eff2[p-cutsize1] = ratio;
       eff2_er[p-cutsize1] = err;
       zeros2[p-cutsize1] = 0;
-      cut_VAFR[p-cutsize1] = cut_pt_last_muon[p-cutsize1];
+      cut_VAFR[p-cutsize1] = cut_VAFR_last_muon[p-cutsize1];
       //cout<<eff2[p-cutsize1]<<endl;
       //cout<<eff2_er[p-cutsize1]<<endl;
 }
@@ -540,8 +540,7 @@ void prova(){
   gr1->SetMarkerColor(2);
   gr1->SetMarkerStyle(21);
   gr1->SetMarkerSize(1);
-  gr1->SetTitle("upper limit on the last muon");
-  gr1->GetXaxis()->SetLabelSize(0);
+  gr1->SetTitle("upper limit on the last muon");  
   gr1->GetXaxis()->SetTitle("p_{t} (GeV)");
   gr1->GetYaxis()->SetTitle("S/#sqrt{B}");
   MyC1->cd();
@@ -553,7 +552,6 @@ void prova(){
   gr2->SetMarkerStyle(21);
   gr2->SetMarkerSize(1);
   gr2->SetTitle("lower limit on the last muon");
-  gr2->GetXaxis()->SetLabelSize(0);
   gr2->GetXaxis()->SetTitle("valid fraction");
   gr2->GetYaxis()->SetTitle("S/#sqrt{B}");
   MyC2->cd();
