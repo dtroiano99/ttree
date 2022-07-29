@@ -234,7 +234,7 @@ void Fun(){
   TFile* f4 = TFile::Open("/eos/cms/store/group/phys_higgs/cmshzz4l/xBF/Run2/UL/MC/2018/GluGluHToZZTo4L_M126_2018_skimmed.root","read");
   float s4 =  0.014371789;
   TFile* f5 = TFile::Open("/eos/cms/store/group/phys_higgs/cmshzz4l/xBF/Run2/UL/MC/2018/GluGluHToZZTo4L_M130_2018_skimmed.root","read");
-  float s5 =  0.01333521;
+  float s5 =  0.018685844;
   TH1F *sig_ggH[DIM1][DIM];
   sigTH1( f1,s1,f2,s2,f3,s3,f4,s4,f5,s5,sig_ggH);
 
